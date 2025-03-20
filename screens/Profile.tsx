@@ -14,7 +14,10 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
-// Import GestureHandlerRootView for bottom sheet
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 // Assuming these images are in your assets folder
@@ -30,6 +33,18 @@ const IMAGES = {
 };
 
 const ProfileScreen = () => {
+  // const bottomSheetRef = useRef(null);
+  // Ref for the Gorhom Bottom Sheet
+  const bottomSheetModalRef = useRef(null);
+
+  // Snap points for the bottom sheet
+  const snapPoints = ["40%", "80%"];
+
+  // Function to open the bottom sheet
+  const handlePresentModalPress = () => {
+    bottomSheetModalRef.current?.present();
+  };
+
   const [isGhostModeEnabled, setIsGhostModeEnabled] = useState(false);
 
   const toggleGhostMode = () => {
@@ -37,135 +52,248 @@ const ProfileScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>My Profile</Text>
-        <TouchableOpacity>
-          <Image
-            source={IMAGES.notificationIcon}
-            style={styles.notificationIcon}
-          />
-        </TouchableOpacity>
-      </View>
-
-      <ScrollView style={styles.scrollContainer}>
-        <View style={styles.profileCard}>
-          <View style={styles.profileImageContainer}>
-            <View style={styles.profileImageBorder}>
-              <Image source={IMAGES.profilePic} style={styles.profileImage} />
-            </View>
+    <GestureHandlerRootView style={{ height: "100%" }}>
+      <BottomSheetModalProvider>
+        <SafeAreaView style={styles.container}>
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>My Profile</Text>
+            <TouchableOpacity>
+              <Image
+                source={IMAGES.notificationIcon}
+                style={styles.notificationIcon}
+              />
+            </TouchableOpacity>
           </View>
 
-          <View style={styles.profileInfo}>
-            <View style={styles.nameContainer}>
-              <Text style={styles.profileName}>Ayomide Petter, 24</Text>
-              <Image source={IMAGES.verifiedIcon} style={styles.verifiedIcon} />
+          <ScrollView style={styles.scrollContainer}>
+            <View style={styles.profileCard}>
+              <View style={styles.profileImageContainer}>
+                <View style={styles.profileImageBorder}>
+                  <Image
+                    source={IMAGES.profilePic}
+                    style={styles.profileImage}
+                  />
+                </View>
+              </View>
+
+              <View style={styles.profileInfo}>
+                <View style={styles.nameContainer}>
+                  <Text style={styles.profileName}>Ayomide Petter, 24</Text>
+                  <Image
+                    source={IMAGES.verifiedIcon}
+                    style={styles.verifiedIcon}
+                  />
+                </View>
+
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "#2A2A2A",
+                    padding: 8,
+                    borderRadius: 50,
+                    paddingHorizontal: 12,
+                  }}
+                >
+                  <Text style={styles.previewProfileText}>Preview profile</Text>
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity
+                style={styles.statsRow}
+                // onPress={() => bottomSheetRef.current.open()}
+
+                onPress={handlePresentModalPress}
+              >
+                <View style={styles.statsLabel}>
+                  <Text style={{ color: "#F5F6FA" }}>
+                    {" "}
+                    Available roses{"   "}{" "}
+                  </Text>
+                  <Text style={styles.chevron}>
+                    <FontAwesome name="angle-right" size={24} color="#F5F6FA" />
+                  </Text>
+                </View>
+                <View style={styles.statsValueContainer}>
+                  <Image source={IMAGES.roseIcon} style={styles.statsIcon} />
+                  <Text style={styles.statsValue}>120</Text>
+                </View>
+              </TouchableOpacity>
+
+              {/* Bottom Sheet */}
+              <BottomSheetModal
+                ref={bottomSheetModalRef}
+                index={0}
+                snapPoints={snapPoints}
+                backgroundStyle={{ borderRadius: 20 }}
+                handleIndicatorStyle={{ backgroundColor: "#ccc" }}
+              >
+                <View style={{ padding: 20 }}>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      marginBottom: 15,
+                    }}
+                  >
+                    Roses Overview
+                  </Text>
+                  <View
+                    style={{
+                      borderWidth: 0.5,
+                      borderColor: "#666",
+                      padding: 12,
+                      borderRadius: 15,
+                    }}
+                  >
+                    <View
+                      style={{
+                        marginBottom: 10,
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Text style={{ color: "#666", fontSize: 16 }}>
+                        Available Roses
+                      </Text>
+                      <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                        102
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        marginBottom: 10,
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Text style={{ color: "#666", fontSize: 16 }}>
+                        Received Roses
+                      </Text>
+                      <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                        50
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Text style={{ color: "#666", fontSize: 16 }}>
+                        Sent Roses
+                      </Text>
+                      <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                        20
+                      </Text>
+                    </View>
+                  </View>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: "#E742A0",
+                      padding: 14,
+                      borderRadius: 50,
+                      alignItems: "center",
+                      marginTop: 15,
+                    }}
+                    onPress={() => bottomSheetModalRef.current?.close()}
+                  >
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: 16,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Okay
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </BottomSheetModal>
+
+              <View style={styles.statsRow2}>
+                <Text style={styles.statsLabel}>Swipes left</Text>
+                <Text style={styles.statsValue}>102</Text>
+              </View>
+
+              <TouchableOpacity style={styles.upgradeButton}>
+                <Text style={styles.buttonText}>Upgrade</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.secondaryButton}>
+                <Text style={styles.secondaryButtonText}>Buy Roses</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.secondaryButton}>
+                <Text style={styles.secondaryButtonText}>Bammby Shop</Text>
+              </TouchableOpacity>
             </View>
 
             <TouchableOpacity
               style={{
-                backgroundColor: "#2A2A2A",
-                padding: 8,
-                borderRadius: 50,
-                paddingHorizontal: 12,
+                flexDirection: "row",
+                borderWidth: 1,
+                borderColor: "#D70A53",
+                margin: 20,
+                padding: 12,
+                borderRadius: 12,
+                justifyContent: "space-between",
               }}
             >
-              <Text style={styles.previewProfileText}>Preview profile</Text>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Image
+                  source={IMAGES.eyeIcon}
+                  style={{ height: 27, width: 27 }}
+                />
+                <Text style={{ marginLeft: 12, color: "#2A2A2A" }}>
+                  Get seen more, before others
+                </Text>
+              </View>
+
+              <FontAwesome name="angle-right" size={24} color="black" />
             </TouchableOpacity>
-          </View>
 
-          <TouchableOpacity style={styles.statsRow}>
-            <View style={styles.statsLabel}>
-              <Text style={{ color: "#F5F6FA" }}> Available roses{"   "} </Text>
-              <Text style={styles.chevron}>
-                <FontAwesome name="angle-right" size={24} color="#F5F6FA" />
-              </Text>
+            <View style={styles.actionsContainer}>
+              <TouchableOpacity style={styles.actionItem}>
+                <View style={styles.actionIconContainer}>
+                  <Feather name="download" size={24} color="black" />
+                </View>
+                <Text style={styles.actionText}>Withdraw roses</Text>
+                <Text style={styles.chevron}>›</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.actionItem}>
+                <View style={styles.actionIconContainer}>
+                  <MaterialCommunityIcons name="eye" size={24} color="black" />
+                </View>
+                <Text style={styles.actionText}>See who likes you</Text>
+                <Text style={styles.chevron}>›</Text>
+              </TouchableOpacity>
+
+              <View style={styles.actionItem}>
+                <View style={styles.actionIconContainer}>
+                  <MaterialCommunityIcons
+                    name="ghost-outline"
+                    size={24}
+                    color="black"
+                  />
+                </View>
+                <Text style={styles.actionText}>Turn on Ghost mode</Text>
+                <Switch
+                  trackColor={{ false: "#767577", true: "#D70A53" }}
+                  thumbColor={isGhostModeEnabled ? "#fff" : "#f4f3f4"}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={toggleGhostMode}
+                  value={isGhostModeEnabled}
+                  style={styles.switch}
+                />
+              </View>
             </View>
-            <View style={styles.statsValueContainer}>
-              <Image source={IMAGES.roseIcon} style={styles.statsIcon} />
-              <Text style={styles.statsValue}>120</Text>
-            </View>
-          </TouchableOpacity>
+          </ScrollView>
 
-          <View style={styles.statsRow2}>
-            <Text style={styles.statsLabel}>Swipes left</Text>
-            <Text style={styles.statsValue}>102</Text>
-          </View>
-
-          <TouchableOpacity style={styles.upgradeButton}>
-            <Text style={styles.buttonText}>Upgrade</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.secondaryButton}>
-            <Text style={styles.secondaryButtonText}>Buy Roses</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.secondaryButton}>
-            <Text style={styles.secondaryButtonText}>Bammby Shop</Text>
-          </TouchableOpacity>
-        </View>
-
-        <TouchableOpacity
-          style={{
-            flexDirection: "row",
-            borderWidth: 1,
-            borderColor: "#D70A53",
-            margin: 20,
-            padding: 12,
-            borderRadius: 12,
-            justifyContent: "space-between",
-          }}
-        >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Image source={IMAGES.eyeIcon} style={{ height: 27, width: 27 }} />
-            <Text style={{ marginLeft: 12, color: "#2A2A2A" }}>
-              Get seen more, before others
-            </Text>
-          </View>
-
-          <FontAwesome name="angle-right" size={24} color="black" />
-        </TouchableOpacity>
-
-        <View style={styles.actionsContainer}>
-          <TouchableOpacity style={styles.actionItem}>
-            <View style={styles.actionIconContainer}>
-              <Feather name="download" size={24} color="black" />
-            </View>
-            <Text style={styles.actionText}>Withdraw roses</Text>
-            <Text style={styles.chevron}>›</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.actionItem}>
-            <View style={styles.actionIconContainer}>
-              <MaterialCommunityIcons name="eye" size={24} color="black" />
-            </View>
-            <Text style={styles.actionText}>See who likes you</Text>
-            <Text style={styles.chevron}>›</Text>
-          </TouchableOpacity>
-
-          <View style={styles.actionItem}>
-            <View style={styles.actionIconContainer}>
-              <MaterialCommunityIcons
-                name="ghost-outline"
-                size={24}
-                color="black"
-              />
-            </View>
-            <Text style={styles.actionText}>Turn on Ghost mode</Text>
-            <Switch
-              trackColor={{ false: "#767577", true: "#D70A53" }}
-              thumbColor={isGhostModeEnabled ? "#fff" : "#f4f3f4"}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={toggleGhostMode}
-              value={isGhostModeEnabled}
-              style={styles.switch}
-            />
-          </View>
-        </View>
-      </ScrollView>
-
-      {/* Bottom Sheet */}
-    </SafeAreaView>
+          {/* Bottom Sheet */}
+        </SafeAreaView>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 };
 

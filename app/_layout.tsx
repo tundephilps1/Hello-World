@@ -5,8 +5,8 @@ import { View } from "react-native";
 export default function RootLayout() {
   return (
     <View>
-      {/* <ProfileScreen /> */}
-      <LikesScreen />
+      <ProfileScreen />
+      {/* <LikesScreen /> */}
     </View>
   );
 }
